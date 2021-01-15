@@ -10,7 +10,9 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule
   ],
-  providers: [],
+  providers: [
+    Document
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
