@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import 'rxjs';
 import {fromEvent, interval, Observable, of, timer} from 'rxjs';
 import {fromPromise} from 'rxjs/internal-compatibility';
+import {debounce, debounceTime, filter, first, last, map, throttleTime} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,44 @@ export class AppComponent implements OnInit {
   observable$: Observable<any>;
 
   ngOnInit(): void {
+
+    const clicks = fromEvent(document, 'click');
+
+    // const mouseEvents = fromEvent(document, 'mousemove');
+    //
+    // mouseEvents.pipe(
+    //   debounceTime(1000)
+    // ).subscribe(e => console.log(e));
+
+    // const numbers = of(10, -100, 1000);
+    //
+    // numbers.pipe(
+    //   filter(n => n > 0),
+    //   // first(),
+    //   last()
+    // ).subscribe(value => console.log(value));
+
+    // const names = of('Max', 'Andrii', 'Vlad');
+    // names.subscribe(name => console.log(name));
+
+    // const jsonString = '{ "type": "Dog", "breed": "Pug"}';
+    // const apiCall = of(jsonString);
+    //
+    // apiCall.pipe(
+    //   map(json => JSON.parse(json))
+    // ).subscribe(obj => console.log(obj.type, obj.breed));
+
+    // const numbers = of(10, 100, 1000);
+    //
+    // numbers.pipe(
+    //   map(num => Math.log(num)),
+    //   map(num => Math.pow(num, 2))
+    // ).subscribe(x => console.log(x));
+
+    // const timerValue = timer(1000);
+    // timerValue.finally(() => console.log('All done'))
+    //   .subscribe();
+
     // this.observable$ = Observable.create(observer => {
     //   observer.next('hello'); // call next method to send values (value can be anything)
     //   observer.next('world');
@@ -45,22 +84,22 @@ export class AppComponent implements OnInit {
 
     // Hot vs. Cold Observables
     // Cold
-    const cold = Observable.create(observer => {
-      observer.next(Math.random());
-    });
-
-    cold.subscribe(a => console.log(a));
-    cold.subscribe(b => console.log(b));
+    // const cold = Observable.create(observer => {
+    //   observer.next(Math.random());
+    // });
+    //
+    // cold.subscribe(a => console.log(a));
+    // cold.subscribe(b => console.log(b));
 
     // Hot
-    const x = Math.random();
-
-    const hot = Observable.create(observer => {
-      observer.next(x);
-    });
-
-    hot.subscribe(a => console.log(a));
-    hot.subscribe(b => console.log(b));
+    // const x = Math.random();
+    //
+    // const hot = Observable.create(observer => {
+    //   observer.next(x);
+    // });
+    //
+    // hot.subscribe(a => console.log(a));
+    // hot.subscribe(b => console.log(b));
 
 
   }
