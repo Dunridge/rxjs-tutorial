@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {interval} from 'rxjs';
+import {interval, Subject} from 'rxjs';
 import {map, throttleTime} from 'rxjs/operators';
 
 @Component({
@@ -14,19 +14,20 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const observable = interval(1000);
-    const observer = {
-      next: (value) => {
-        console.log(value);
-      }
-    };
+    const subject = new Subject();
 
-    observable.pipe(
-      map(value => {
-        return 'Number: ' + value;
-      }),
-      throttleTime(2000)
-      )
-      .subscribe(observer);
+    subject.subscribe({
+      next: value => console.log(value),
+      error: err => console.log(err),
+      complete: () => console.log('completed')
+    });
+
+    subject.subscribe({
+      next: value => console.log(value)
+    });
+
+    subject.next('A new data piece');
+    // subject.error('Error');
+    subject.complete();
   }
 }
