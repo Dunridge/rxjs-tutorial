@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {interval, Subject} from 'rxjs';
-import {map, throttleTime} from 'rxjs/operators';
+import {interval} from 'rxjs';
+import {filter} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -14,20 +14,15 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const subject = new Subject();
+    const observable = interval(1000);
 
-    subject.subscribe({
-      next: value => console.log(value),
-      error: err => console.log(err),
-      complete: () => console.log('completed')
-    });
-
-    subject.subscribe({
-      next: value => console.log(value)
-    });
-
-    subject.next('A new data piece');
-    // subject.error('Error');
-    subject.complete();
+    observable
+      .pipe(
+        filter((value => value % 2 === 0))
+      )
+      .subscribe({
+        next: value => console.log(value),
+        error: err => console.log('Error: ', err)
+      });
   }
 }
