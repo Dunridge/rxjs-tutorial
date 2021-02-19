@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {fromEvent, of} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, mergeMap, pluck, reduce, scan} from 'rxjs/operators';
+import {fromEvent, interval, of} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, mergeMap, pluck, reduce, scan, switchMap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -14,23 +14,26 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const input1 = document.querySelector('#input1');
-    const input2 = document.querySelector('#input2');
+    const button = document.querySelector('button');
 
-    const span = document.querySelector('span');
+    const obs1 = fromEvent(button, 'click');
+    const obs2 = interval(1000);
 
-    const obs1 = fromEvent(input1, 'input');
-    const obs2 = fromEvent(input2, 'input');
+    // obs1.subscribe(
+    //   (event) => {
+    //     obs2.subscribe(
+    //       value => console.log(value)
+    //     );
+    //   }
+    // );
 
+    // now the switchMap allows us to call the value from the inner observable and cancel other's out
     obs1.pipe(
-      mergeMap(event1 => {
-        return obs2.pipe(
-          // @ts-ignore
-          map(event2 => event1.target.value + ' ' + event2.target.value)
-        );
-      })
-    ).subscribe(
-      combinedValue => span.textContent = combinedValue
-    );
+      switchMap(
+        event => {
+          return obs2;
+        }
+      )
+    ).subscribe(console.log);
   }
 }
