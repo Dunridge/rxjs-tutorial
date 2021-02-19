@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {fromEvent, of} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map, pluck, reduce, scan} from 'rxjs/operators';
+import {debounceTime, distinctUntilChanged, map, mergeMap, pluck, reduce, scan} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -14,18 +14,23 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const input = document.querySelector('input');
-    const observable = fromEvent(input, 'input');
+    const input1 = document.querySelector('#input1');
+    const input2 = document.querySelector('#input2');
 
-    observable
-      .pipe(
-        pluck('target', 'value'),
-        debounceTime(500),
-        distinctUntilChanged()
-      )
-      .subscribe({
-        // @ts-ignore
-        next: value => console.log(value)
-      });
+    const span = document.querySelector('span');
+
+    const obs1 = fromEvent(input1, 'input');
+    const obs2 = fromEvent(input2, 'input');
+
+    obs1.pipe(
+      mergeMap(event1 => {
+        return obs2.pipe(
+          // @ts-ignore
+          map(event2 => event1.target.value + ' ' + event2.target.value)
+        );
+      })
+    ).subscribe(
+      combinedValue => span.textContent = combinedValue
+    );
   }
 }
