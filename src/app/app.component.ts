@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {fromEvent} from 'rxjs';
-import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import {fromEvent, of} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map, reduce, scan} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -15,19 +15,14 @@ export class AppComponent implements OnInit {
 
   ngOnInit(): void {
     const input = document.querySelector('input');
-    const observable = fromEvent(input, 'input');
+    const observable = of(1, 2, 3, 4, 5);
+
     observable
       .pipe(
-        map(event => {
-          // @ts-ignore
-          return event.target.value;
-        }),
-        debounceTime(2000),
-        distinctUntilChanged()
+        scan((total, curr) => total + curr, 0)
       )
       .subscribe({
-        // @ts-ignore
-        next: (value) => console.log(value)
+        next: value => console.log(value)
       });
   }
 }
