@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {fromEvent, interval, of} from 'rxjs';
+import {BehaviorSubject, fromEvent, interval, of, Subject} from 'rxjs';
 import {debounceTime, distinctUntilChanged, map, mergeMap, pluck, reduce, scan, switchMap} from 'rxjs/operators';
 
 @Component({
@@ -14,26 +14,15 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const clickEmitted = new BehaviorSubject('Not clicked');
     const button = document.querySelector('button');
+    const div = document.querySelector('div');
 
-    const obs1 = fromEvent(button, 'click');
-    const obs2 = interval(1000);
+    button.addEventListener('click', () => clickEmitted.next('Clicked!'));
 
-    // obs1.subscribe(
-    //   (event) => {
-    //     obs2.subscribe(
-    //       value => console.log(value)
-    //     );
-    //   }
-    // );
-
-    // now the switchMap allows us to call the value from the inner observable and cancel other's out
-    obs1.pipe(
-      switchMap(
-        event => {
-          return obs2;
-        }
-      )
-    ).subscribe(console.log);
+    clickEmitted.subscribe(value => {
+      // @ts-ignore
+      div.textContent = value;
+    });
   }
 }
