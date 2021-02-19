@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {interval} from 'rxjs';
-import {filter} from 'rxjs/operators';
+import {fromEvent} from 'rxjs';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -14,15 +14,20 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const observable = interval(1000);
-
+    const input = document.querySelector('input');
+    const observable = fromEvent(input, 'input');
     observable
       .pipe(
-        filter((value => value % 2 === 0))
+        map(event => {
+          // @ts-ignore
+          return event.target.value;
+        }),
+        debounceTime(2000),
+        distinctUntilChanged()
       )
       .subscribe({
-        next: value => console.log(value),
-        error: err => console.log('Error: ', err)
+        // @ts-ignore
+        next: (value) => console.log(value)
       });
   }
 }
